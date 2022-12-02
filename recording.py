@@ -18,7 +18,6 @@ kernel = np.ones((5, 5), 'uint8')
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
-fps = 30.0
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 while 1:
