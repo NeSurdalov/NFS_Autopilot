@@ -74,10 +74,14 @@ while True:
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Обрезает окно по миникарте:
-    map_rect = (window.left + int(window.width * 0.055),
+    map_rect_r = (window.left + int(window.width * 0.075),
                 window.top + int(window.height * 0.65),
                 int(window.width * 0.21),
                 int(window.height * 0.27))
+    map_rect_l = (window.left + int(window.width * 0.025),
+                 window.top + int(window.height * 0.65),
+                 int(window.width * 0.05),
+                 int(window.height * 0.05))
     speed_rect = (window.left + int(window.width * 0.805),
                   window.top + int(window.height * 0.82),
                   int(window.width * 0.08),
@@ -101,19 +105,19 @@ while True:
         # cv2.imshow('speed_creenshot', nfs_speed)
         break
 
-def color_pixel_count(img_r,img_l):
+def color_pixel_count(map_rect_r,map_rect_l):
     '''
     Count number of pixels in diferent colors
-    :param img_r: right side of minimap
-    :param img_l: left sude of mininap
+    :param map_rect_r: right side of minimap
+    :param map_rect_l: left sude of mininap
     :return: n_l and n_r
     '''
     from PIL import *
 
-    for pixel in img_r.getdata():
+    for pixel in map_rect_r.getdata():
         if pixel is (250,250,250) :
             n_r += 1
 
-    for pixel in img_l.getdata():
+    for pixel in map_rect_l.getdata():
         if pixel is (250,250,250) :
             n_l += 1
