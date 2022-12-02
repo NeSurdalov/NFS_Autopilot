@@ -8,7 +8,7 @@ import pygetwindow as gw
 import keyboard
 
 class movements:
-
+    '''use move. method to: do some of this things:'''
     def __init__(self):
         self.w_pressed=False
         self.s_pressed=False
@@ -52,7 +52,7 @@ class movements:
             keyboard.release("d")
             self.d_pressed=False
         
-
+move=movements()
 
 class imcap: #imcap=image capture
     '''Class for working with image capturing'''
