@@ -6,11 +6,38 @@ from PIL import Image
 import pyautogui
 import pygetwindow as gw
 
+
 class imcap: #imcap=image capture
     '''Class for working with image capturing'''
-    pass
     
-    
+    def get_speed_list(img):
+        offset = 30
+        segment_condition = []
+        digit_condition = []
+
+        cv2.resize(img, (92, 36))
+        for i in range(3):
+            segment_positions = [
+                (int(7), int(13 + offset * i)),  # Top
+                (int(11), int(4 + offset * i)),  # Top Left
+                (int(11), int(22 + offset * i)),  # Top right
+                (int(18), int(13 + offset * i)),  # Middle
+                (int(26), int(4 + offset * i)),  # Bottom Left
+                (int(26), int(22 + offset * i)),  # Bottom Right
+                (int(30), int(13 + offset * i))  # Bottom
+            ]
+            for segment in segment_positions:
+                segment_condition.append(img[segment])
+
+            digit_condition.append(segment_condition)
+            segment_condition = []
+
+        return(digit_condition)
+
+    def get_speed(speed_list):
+        # TODO convert input list to the velocity value  
+        pass
+
 
 # маска для сглаживания входящей картинки:
 kernel = np.ones((5, 5), 'uint8')
@@ -47,11 +74,12 @@ while True:
 
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
-    print(frame_map.shape)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        # cv2.imshow('speed_creenshot', nfs_speed)
+        cv2.imwrite('images/speed_screenshot.jpg', nfs_speed)
+        print(imcap.get_speed_list(nfs_speed))
         break
+
 
 def color_pixel_count(img_r,img_l):
     '''
@@ -60,7 +88,7 @@ def color_pixel_count(img_r,img_l):
     :param img_l: left sude of mininap
     :return: n_l and n_r
     '''
-    from PIL import *
+    # from PIL import *
 
     for pixel in img_r.getdata():
         if pixel is (250,250,250) :
