@@ -5,6 +5,54 @@ from PIL import Image
 # import win32gui #where we use it?
 import pyautogui
 import pygetwindow as gw
+import keyboard
+
+class movements:
+    '''use move. method to: do some of this things:'''
+    def __init__(self):
+        self.w_pressed=False
+        self.s_pressed=False
+        self.a_pressed=False
+        self.d_pressed=False
+
+    def gas(self):
+        if(self.s_pressed): 
+            keyboard.release("s")
+            self.s_pressed=False
+        keyboard.press("w")
+        self.w_pressed=True
+
+
+    def brake(self):
+        if(self.w_pressed): 
+            keyboard.release("w")
+            self.w_pressed=False
+        keyboard.press("s")
+        self.s_pressed=True
+
+    def left(self):
+        if(self.d_pressed): 
+            keyboard.release("d")
+            self.d_pressed=False
+        keyboard.press("a")
+        self.a_pressed=True
+
+    def right(self):
+        if(self.a_pressed): 
+            keyboard.release("a")
+            self.a_pressed=False
+        keyboard.press("d")
+        self.d_pressed=True
+    
+    def straight(self):
+        if(self.a_pressed): 
+            keyboard.release("a")
+            self.a_pressed=False
+        if(self.d_pressed): 
+            keyboard.release("d")
+            self.d_pressed=False
+        
+move=movements()
 
 
 class imcap: #imcap=image capture
@@ -53,10 +101,14 @@ while True:
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Обрезает окно по миникарте:
-    map_rect = (window.left + int(window.width * 0.055),
+    map_rect_r = (window.left + int(window.width * 0.075),
                 window.top + int(window.height * 0.65),
                 int(window.width * 0.21),
                 int(window.height * 0.27))
+    map_rect_l = (window.left + int(window.width * 0.025),
+                 window.top + int(window.height * 0.65),
+                 int(window.width * 0.05),
+                 int(window.height * 0.05))
     speed_rect = (window.left + int(window.width * 0.805),
                   window.top + int(window.height * 0.82),
                   int(window.width * 0.08),
@@ -84,16 +136,16 @@ while True:
 def color_pixel_count(img_r,img_l):
     '''
     Count number of pixels in diferent colors
-    :param img_r: right side of minimap
-    :param img_l: left sude of mininap
+    :param map_rect_r: right side of minimap
+    :param map_rect_l: left sude of mininap
     :return: n_l and n_r
     '''
     # from PIL import *
 
-    for pixel in img_r.getdata():
+    for pixel in map_rect_r.getdata():
         if pixel is (250,250,250) :
             n_r += 1
 
-    for pixel in img_l.getdata():
+    for pixel in map_rect_l.getdata():
         if pixel is (250,250,250) :
             n_l += 1
