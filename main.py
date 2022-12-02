@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 from PIL import Image
-import mss
-#import win32gui #where we use it?
+# import mss
+# import win32gui #where we use it?
 import pyautogui
 import pygetwindow as gw
 
@@ -18,6 +18,7 @@ kernel = np.ones((5, 5), 'uint8')
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
+fps = 30.0
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 
@@ -34,8 +35,8 @@ while True:
                   int(window.width * 0.08),
                   int(window.height * 0.05))
 
-    nfs_map = pyautogui.screenshot(region=map_rect)
-    nfs_speed = pyautogui.screenshot(region=speed_rect)
+    nfs_map = np.array(pyautogui.screenshot(region=map_rect))
+    nfs_speed = np.array(pyautogui.screenshot(region=speed_rect))
 
     # erode_speed = cv2.erode(nfs_speed, kernel, iterations=1)  # сглаживание
     (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # отсеивание пикселей
@@ -49,4 +50,5 @@ while True:
     print(frame_map.shape)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        # cv2.imshow('speed_creenshot', nfs_speed)
         break
