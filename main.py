@@ -83,20 +83,21 @@ class imcap: #imcap=image capture
         return(digit_condition)
 
     def get_speed(speed_list):
-    for i in range(3)
-        if speed_list[i][0] == 255 :
-            if speed_list[i][3]==speed_list[i][6]==0 : 
-                speed[i] = 1
-            elif speed_list[i][3]==0: 
-                speed[i] = 4
-        elif speed_list[i][0] == 0:
-            if speed_list[i][3] == 0 :
-                speed[i] = 7
-            elif speed_list[i][2] == 255:
-                if speed_list[i][4] == 0 :
-                    speed[i] = 6
-                else:
-                    speed[i] = 5
+        speed = []
+        for i in range(3):
+            if speed_list[i][0] == 255 :
+                if speed_list[i][3]==speed_list[i][6]==0 : 
+                    speed[i] = 1
+                elif speed_list[i][3]==0: 
+                    speed[i] = 4
+            elif speed_list[i][0] == 0:
+                if speed_list[i][3] == 0 :
+                    speed[i] = 7
+                elif speed_list[i][2] == 255:
+                    if speed_list[i][4] == 0 :
+                        speed[i] = 6
+                    else:
+                        speed[i] = 5
             if speed_list[i][1] == 255 :
                 if speed_list[i][4] == 0 :
                     speed[i] = 2
@@ -107,8 +108,8 @@ class imcap: #imcap=image capture
                     speed[i] = 8
                 else : 
                     speed[i] = 9
-    v = 100*speed[0] + 10*speed[1] + speed[2]
-        pass
+        v = 100*speed[0] + 10*speed[1] + speed[2]
+        return(v)
 
     def get_rects(window):
         map_rect = (window.left + int(window.width * 0.055),
@@ -172,7 +173,8 @@ while True:
         cv2.imwrite('images/map_l.jpg', nfs_map_l)
         cv2.imwrite('images/map_r.jpg', nfs_map_r)
         cv2.imwrite('images/map.jpg', nfs_map)
-        print(imcap.get_speed_list(nfs_speed))
+        speed_list = imcap.get_speed_list(nfs_speed)
+        print(imcap.get_speed(speed_list))
         break
 
 
