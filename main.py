@@ -5,6 +5,54 @@ from PIL import Image
 # import win32gui #where we use it?
 import pyautogui
 import pygetwindow as gw
+import keyboard
+
+class movements:
+
+    def __init__(self):
+        self.w_pressed=False
+        self.s_pressed=False
+        self.a_pressed=False
+        self.d_pressed=False
+
+    def gas(self):
+        if(self.s_pressed): 
+            keyboard.release("s")
+            self.s_pressed=False
+        keyboard.press("w")
+        self.w_pressed=True
+
+
+    def brake(self):
+        if(self.w_pressed): 
+            keyboard.release("w")
+            self.w_pressed=False
+        keyboard.press("s")
+        self.s_pressed=True
+
+    def left(self):
+        if(self.d_pressed): 
+            keyboard.release("d")
+            self.d_pressed=False
+        keyboard.press("a")
+        self.a_pressed=True
+
+    def right(self):
+        if(self.a_pressed): 
+            keyboard.release("a")
+            self.a_pressed=False
+        keyboard.press("d")
+        self.d_pressed=True
+    
+    def straight(self):
+        if(self.a_pressed): 
+            keyboard.release("a")
+            self.a_pressed=False
+        if(self.d_pressed): 
+            keyboard.release("d")
+            self.d_pressed=False
+        
+
 
 class imcap: #imcap=image capture
     '''Class for working with image capturing'''
