@@ -35,3 +35,20 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+def color_pixel_count(img_r,img_l):
+    '''
+    Count number of pixels in diferent colors
+    :param img_r: right side of minimap
+    :param img_l: left sude of mininap
+    :return: n_l and n_r
+    '''
+    from PIL import *
+
+    for pixel in img_r.getdata():
+        if pixel is (250,250,250) :
+            n_r += 1
+
+    for pixel in img_l.getdata():
+        if pixel is (250,250,250) :
+            n_l += 1
