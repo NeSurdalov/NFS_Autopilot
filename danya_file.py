@@ -51,14 +51,14 @@ def get_speed(img):
     return digit_condition
 
 
-def speed_determination(V, n_r, n_l, n_r2, n_l2):
+def speed_determination(v, n_r, n_l, n_r2, n_l2):
     '''
        Получает на вход количества пикселей на разных частях экрана и исходя из этого понимает
-    какие кнопки и сколько стоит нажимать
+    какие кнопки и сколько стоит нажимать.
     dx-ширина области с которой каретка будет считывать значения
     dv-что-то типо норированного изменения скорости , по-типу нажатия кнопки вправо на протяжении 20 тиков
     dt-например 100 тиков
-    :param V:
+    :param v: speed of car at the moment
     :param n_r: Number of black pixels on right side
     :param n_l: Number of black pixels on left side
     :param n_r2: Number of black pixels on riht side on bigger area
@@ -69,12 +69,12 @@ def speed_determination(V, n_r, n_l, n_r2, n_l2):
             left
     '''
 
-    r = 100 * dv
+    r = 100
 """
 Рассчитывает скорости вправо и влево
 """
-    v_r = (n_r/(n_l+n_r))*np.exp(v*dt/dx)*dv
-    v_l = (n_l/(n_l+n_r))*np.exp(v*dt/dx)*dv
+    v_r = (n_r/(n_l+n_r))*np.exp(v*dt/dx)
+    v_l = (n_l/(n_l+n_r))*np.exp(v*dt/dx)
 if v_r => v_l :
     turn = v_r
     right = 1
@@ -82,19 +82,19 @@ if v_r => v_l :
 else :
     turn = v_l
     left = 1
-    right = 1
+    right = 0
 
-if v_l - rdv <= v_r = > v_l + rdv:
+if v_l - r <= v_r = > v_l + r:
     v_r = v_l = 0
 
 """ Начинает разгоняться """
 
 if n_r - 10 <= n_l = > n_r + 10:
-    v_s += 10 * dv
+    v_s += 10
 
 if n_r2 - 10 <= n_l2 = > n_r2 + 10:
     nitro = 1
-
+print(n_r, n_l, right, left, turn, nitro)
 
 while True:
     window_rect = (120, 650, 220, 220)  # область работыOpenCV
