@@ -90,19 +90,19 @@ class imcap: #imcap=image capture
             elif speed_list[i][3]==0: 
                 speed[i] = 4
         elif speed_list[i][0] == 0:
-            if speed_list[i][3] == 0 :
+            if speed_list[i][3] == 255 :
                 speed[i] = 7
             elif speed_list[i][2] == 255:
                 if speed_list[i][4] == 0 :
                     speed[i] = 6
                 else:
                     speed[i] = 5
-            if speed_list[i][1] == 255 :
+            elif speed_list[i][1] == 255 :
                 if speed_list[i][4] == 0 :
                     speed[i] = 2
                 else : 
                     speed[i] = 3
-            if speed_list[i][1] == 0 == speed_list[i][2] : 
+            elif speed_list[i][1] == 0 == speed_list[i][2] :
                 if speed_list[i][4] == 0 :
                     speed[i] = 8
                 else : 
