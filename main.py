@@ -55,9 +55,10 @@ class movements:
 move=movements()
 
 
-class imcap: #imcap=image capture
+class imcap: #imcap == image capture
     '''Class for working with image capturing'''
     
+    # Returns a list of segment conditions:
     def get_speed_list(img):
         offset = 30
         segment_condition = []
@@ -82,13 +83,18 @@ class imcap: #imcap=image capture
 
         return(digit_condition)
 
+    # Converts speed_list to a number:
     def get_speed(speed_list):
         speed = []
         for i in range(3):
-            if speed_list[i][0] == 255 :
-                if speed_list[i][3]==speed_list[i][6]==0 : 
+            if speed_list[i][0] == 255:
+                if speed_list[i][1] == 255:
+                    if speed_list[i][2] == 255:
+                        speed.append(0)
+                elif speed_list[i][]
+                if speed_list[i][3] == speed_list[i][6] == 0 : 
                     speed[i] = 1
-                elif speed_list[i][3]==0: 
+                elif speed_list[i][3] == 0: 
                     speed[i] = 4
             elif speed_list[i][0] == 0:
                 if speed_list[i][3] == 0 :
@@ -111,6 +117,7 @@ class imcap: #imcap=image capture
         v = 100*speed[0] + 10*speed[1] + speed[2]
         return(v)
 
+    # Breaks the window rect to 
     def get_rects(window):
         map_rect = (window.left + int(window.width * 0.055),
                 window.top + int(window.height * 0.65),
