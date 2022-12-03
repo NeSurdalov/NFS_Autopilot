@@ -85,33 +85,33 @@ class imcap: #imcap == image capture
 
     # Converts speed_list to a number:
     def get_speed(speed_list):
-        speed = []
+        speed = [0,0,0]
         for i in range(3):
             if speed_list[i][0] == 255:
                 if speed_list[i][3] == 255 :
-                    speed.append(0)
+                    speed[i] = 0
                 if speed_list[i][3] == speed_list[i][6] == 0:
-                    speed.append(1)
+                    speed[i] = 1
                 elif speed_list[i][3] == 0:
-                    speed.append(4)
+                    speed[i] = 4
             elif speed_list[i][0] == 0:
                 if speed_list[i][3] == 255:
-                    speed.append(7)
+                    speed[i] = 7
                 elif speed_list[i][2] == 255:
                     if speed_list[i][4] == 0:
-                        speed.append(6)
+                        speed[i] = 6
                     else:
-                        speed.append(5)
+                        speed[i] = 5
                 elif speed_list[i][1] == 255:
                     if speed_list[i][4] == 0:
-                        speed.append(2)
+                        speed[i] = 2
                     else:
-                        speed.append(3)
+                        speed[i] = 3
                 elif speed_list[i][1] == 0 == speed_list[i][2]:
                     if speed_list[i][4] == 0:
-                        speed.append(8)
+                        speed[i] = 8
                     else:
-                        speed.append(9)
+                        speed[i] = 9
         v = 100 * speed[0] + 10 * speed[1] + speed[2]
         
     # Breaks the window rect to 
