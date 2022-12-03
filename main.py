@@ -108,7 +108,6 @@ class imcap: #imcap=image capture
                 else : 
                     speed[i] = 9
     v = 100*speed[0] + 10*speed[1] + speed[2]
-        pass
 
 
 # маска для сглаживания входящей картинки:
