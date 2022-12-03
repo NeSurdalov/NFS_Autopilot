@@ -64,7 +64,9 @@ class imcap: #imcap == image capture
         segment_condition = []
         digit_condition = []
 
-        cv2.resize(img, (92, 36))
+        img = cv2.resize(img, (92, 36))
+        print(img.shape)
+
         for i in range(3):
             segment_positions = [
                 (int(7), int(13 + offset * i)),  # Top
@@ -112,8 +114,8 @@ class imcap: #imcap == image capture
                         speed.append(8)
                     else:
                         speed.append(9)
-        v = 100 * speed[0] + 10 * speed[1] + speed[2]
-        
+        return(speed)
+
     # Breaks the window rect to 
     def get_rects(window):
         map_rect = (window.left + int(window.width * 0.055),
