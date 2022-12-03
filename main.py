@@ -164,12 +164,15 @@ while True:
     nfs_map_l = np.array(pyautogui.screenshot(region=map_rect_l))
     nfs_map_r = np.array(pyautogui.screenshot(region=map_rect_r))
 
-    # erode_speed = cv2.erode(nfs_speed, kernel, iterations=1)  # сглаживание
     (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # отсеивание пикселей
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
-    frame_map = np.array(nfs_map)
+    nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
+    (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # отсеивание пикселей
+    
+
     frame_speed = np.array(nfs_speed)
+    frame_map = np.array(nfs_map)
 
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
