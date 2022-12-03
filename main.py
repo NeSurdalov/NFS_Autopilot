@@ -86,34 +86,7 @@ class imcap: #imcap == image capture
     # Converts speed_list to a number:
     def get_speed(speed_list):
         speed = []
-        for i in range(3):
-            if speed_list[i][0] == 255:
-                if speed_list[i][1] == 255:
-                    if speed_list[i][2] == 255:
-                        speed.append(0)
-                elif speed_list[i][]
-                if speed_list[i][3] == speed_list[i][6] == 0 : 
-                    speed[i] = 1
-                elif speed_list[i][3] == 0: 
-                    speed[i] = 4
-            elif speed_list[i][0] == 0:
-                if speed_list[i][3] == 0 :
-                    speed[i] = 7
-                elif speed_list[i][2] == 255:
-                    if speed_list[i][4] == 0 :
-                        speed[i] = 6
-                    else:
-                        speed[i] = 5
-            if speed_list[i][1] == 255 :
-                if speed_list[i][4] == 0 :
-                    speed[i] = 2
-                else : 
-                    speed[i] = 3
-            if speed_list[i][1] == 0 == speed_list[i][2] : 
-                if speed_list[i][4] == 0 :
-                    speed[i] = 8
-                else : 
-                    speed[i] = 9
+        
         v = 100*speed[0] + 10*speed[1] + speed[2]
         return(v)
 
@@ -175,6 +148,9 @@ while True:
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
 
+    speed_list = imcap.get_speed_list(frame_speed)
+    print(imcap.get_speed(speed_list))
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         cv2.imwrite('images/speed_screenshot.jpg', nfs_speed)
         cv2.imwrite('images/map_l.jpg', nfs_map_l)
@@ -195,9 +171,9 @@ def color_pixel_count(img_r,img_l):
     # from PIL import *
 
     for pixel in map_rect_r.getdata():
-        if pixel is (250,250,250) :
+        if pixel == (250,250,250) :
             n_r += 1
 
     for pixel in map_rect_l.getdata():
-        if pixel is (250,250,250) :
+        if pixel == (250,250,250) :
             n_l += 1
