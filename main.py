@@ -117,20 +117,20 @@ class imcap: #imcap == image capture
         v = 100 * speed[0] + 10 * speed[1] + speed[2]
         return(v)
         
-    # Breaks the window rect to 
+    # Breaks the window rect into different rects for the further processing of the ones
     def get_rects(window):
         map_rect = (window.left + int(window.width * 0.055),
                 window.top + int(window.height * 0.65),
                 int(window.width * 0.21),
                 int(window.height * 0.27))
-
+        
         map_rect_l = (map_rect[0],
                  map_rect[1],
                  int(map_rect[2] * 0.5),
                  int(map_rect[3] * 0.5))
 
-        map_rect_r = (map_rect[0],
-                 map_rect[1] + map_rect[2] * 0.5,
+        map_rect_r = (map_rect[0] + map_rect[2] * 0.5,
+                 map_rect[1],
                  int(map_rect[2] * 0.5),
                  int(map_rect[3] * 0.5))    
 
@@ -143,8 +143,8 @@ class imcap: #imcap == image capture
 
 
 
-# маска для сглаживания входящей картинки:
-kernel = np.ones((5, 5), 'uint8')
+# Blurring mask:
+kernel = np.ones((20, 20), 'uint8')
 
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
@@ -156,7 +156,7 @@ window.activate()
 while True:
     window_rect = (window.left, window.top, window.width, window.height)
 
-    # Обрезает окно по миникарте:
+    # Breaking the window into segments:
     map_rect, map_rect_l, map_rect_r, speed_rect = imcap.get_rects(window)[0:4]
 
     nfs_map = np.array(pyautogui.screenshot(region=map_rect))
@@ -164,18 +164,24 @@ while True:
     nfs_map_l = np.array(pyautogui.screenshot(region=map_rect_l))
     nfs_map_r = np.array(pyautogui.screenshot(region=map_rect_r))
 
-    (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # отсеивание пикселей
+    (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # Darker speedometer pixels screening out
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
-    (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # отсеивание пикселей
-    
+    (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # Darker map pixels screening out
+    # nfs_map = cv2.morphologyEx(nfs_map, cv2.MORPH_CLOSE, kernel)
+
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
+    frame_map_l = np.array(nfs_map_l)
+    frame_map_r = np.array(nfs_map_r)
 
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
+
+    # cv2.imshow("Left-side map", frame_map_l)
+    # cv2.imshow("Right-side map", frame_map_r)
 
     speed_list = imcap.get_speed_list(frame_speed)
     print(imcap.get_speed(speed_list))
