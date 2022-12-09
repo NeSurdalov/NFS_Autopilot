@@ -6,7 +6,11 @@ from PIL import Image
 import pyautogui
 import pygetwindow as gw
 import keyboard
-
+fps = 30.0
+gisteresis_st=15
+gisteresis_th=5
+gisteresis_br=30
+target_speed=60
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -31,6 +35,15 @@ class Movements:
             self.pressed['w'] = False
         keyboard.press("s")
         self.pressed['s'] = True
+
+    def roll(self):
+        if(self.pressed['w']): 
+            keyboard.release("w")
+            self.pressed['w'] = False
+        if(self.pressed['s']): 
+            keyboard.release("s")
+            self.pressed['s'] = False
+
 
     def left(self):
         if(self.pressed['d']): 
@@ -179,7 +192,6 @@ kernel = np.ones((20, 20), 'uint8')
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
-fps = 30.0
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 
@@ -216,9 +228,23 @@ while True:
     cv2.imshow("Left-side map", frame_map_l)
     cv2.imshow("Right-side map", frame_map_r)
 
-    speed_list = Imcap.get_speed_list(frame_speed)
-    print(Imcap.get_speed(speed_list))
+    speed = Imcap.get_speed_list(frame_speed)
+    print(Imcap.get_speed(speed))
     print(amount_l, amount_r)
+    #steering control
+    if(abs(amount_l-amount_r)<gisteresis_st):
+        move.straight()
+    elif(amount_r>amount_l):
+        move.left()
+    elif(amount_r<amount_l):
+        move.right()
+    #throttle control
+    if((target_speed-speed)>gisteresis_th):
+        move.gas()
+    elif((speed-target_speed)>gisteresis_br):
+        move.brake()
+    elif(): move.roll()
+    
 
     print()
 
