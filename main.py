@@ -6,7 +6,13 @@ from PIL import Image
 import pyautogui
 import pygetwindow as gw
 import keyboard
-
+import time
+from datetime import datetime
+fps = 30
+gisteresis_st=15
+gisteresis_th=5
+gisteresis_br=30
+target_speed=60
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -25,6 +31,15 @@ class Movements:
             self.pressed['w'] = False
         keyboard.press("s")
         self.pressed['s'] = True
+
+    def roll(self):
+        if(self.pressed['w']): 
+            keyboard.release("w")
+            self.pressed['w'] = False
+        if(self.pressed['s']): 
+            keyboard.release("s")
+            self.pressed['s'] = False
+
 
     def left(self):
         if(self.pressed['d']): 
@@ -55,7 +70,7 @@ move=Movements()
 
 class Imcap: #Imcap == image capture
     '''Class for working with image capturing'''
-    
+    prev_time=datetime.now().microsecond
     # Returns a list of segment conditions:
     def get_speed_list(img):
         offset = 30
@@ -144,20 +159,17 @@ class Imcap: #Imcap == image capture
         return(map_frame_l, map_frame_r, amount_l, amount_r)
 
     def turning(amount_l, amount_r):
-        delta = amount_l - amount_r
+        delta = amount_l - amount_r #not used
         if delta**2 <= 10:
             return(Movements.gas)
         elif delta > 0:
             return(Movements.left)
         elif delta < 0:
             return(Movements.right)
-    
-    def get_center(mask):
-        for y in range(int(mask.shape[0] / 3), mask.shape[0]):
-            for x in range(mask.shape[1]):
-                if mask[y, x] > 100:
-                    return(x, y)
-
+    def limiter():
+        global fps
+        if(datetime.now().microsecond<(Imcap.prev_time+1e6/fps)): time.sleep((Imcap.prev_time+1e6/fps-datetime.now().microsecond)/1e6)
+        Imcap.prev_time=datetime.now().microsecond  #FIXME freezes every 3 seconds
 
 # Blurring mask:
 kernel = np.ones((20, 20), 'uint8')
@@ -165,11 +177,11 @@ kernel = np.ones((20, 20), 'uint8')
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
-fps = 30.0
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 
 while True:
+    Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
@@ -202,8 +214,25 @@ while True:
     cv2.imshow("Right-side map", frame_map_r)
 
     speed_list = Imcap.get_speed_list(frame_speed)
-    print(Imcap.get_speed(speed_list))
+    speed=Imcap.get_speed(speed_list)
+    print(speed)
     print(amount_l, amount_r)
+    #steering control
+    '''if(abs(amount_l-amount_r)<gisteresis_st):
+        move.straight()
+    elif(amount_r>amount_l):
+        move.left()
+    elif(amount_r<amount_l):
+        move.right()
+    #throttle control
+    if((target_speed-speed)>gisteresis_th):
+        move.gas()
+    elif((speed-target_speed)>gisteresis_br):
+        move.brake()
+    elif(): move.roll()'''
+    
+
+    print()
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         print(nfs_map[int(nfs_map.shape[0] / 2), int(nfs_map.shape[1] / 2)])
