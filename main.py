@@ -7,55 +7,59 @@ import pyautogui
 import pygetwindow as gw
 import keyboard
 
-class movements:
+class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
+        self.pressed = {'w': True, 'a': False, 's': False, 'd': False}
+        '''
         self.w_pressed=False
         self.s_pressed=False
         self.a_pressed=False
         self.d_pressed=False
-
+        '''
+        
     def gas(self):
-        if(self.s_pressed): 
+        if(self.pressed['s']): 
             keyboard.release("s")
-            self.s_pressed=False
+            self.pressed['s'] = False
         keyboard.press("w")
-        self.w_pressed=True
-
+        self.pressed['w'] = True
 
     def brake(self):
-        if(self.w_pressed): 
+        if(self.pressed['w']): 
             keyboard.release("w")
-            self.w_pressed=False
+            self.pressed['w'] = False
         keyboard.press("s")
-        self.s_pressed=True
+        self.pressed['s'] = True
 
     def left(self):
-        if(self.d_pressed): 
+        if(self.pressed['d']): 
             keyboard.release("d")
-            self.d_pressed=False
+            self.pressed['d'] = False
         keyboard.press("a")
-        self.a_pressed=True
+        self.pressed['a'] = True
 
     def right(self):
-        if(self.a_pressed): 
+        if(self.pressed['a']): 
             keyboard.release("a")
-            self.a_pressed=False
+            self.pressed['a'] = False
         keyboard.press("d")
-        self.d_pressed=True
+        self.pressed['d'] = True
     
     def straight(self):
-        if(self.a_pressed): 
+        if(self.pressed['a']): 
             keyboard.release("a")
-            self.a_pressed=False
-        if(self.d_pressed): 
+            self.pressed['a'] = False
+        if(self.pressed['d']): 
             keyboard.release("d")
-            self.d_pressed=False
+            self.pressed['d'] = False
+
+    
         
-move=movements()
+move=Movements()
 
 
-class imcap: #imcap == image capture
+class Imcap: #Imcap == image capture
     '''Class for working with image capturing'''
     
     # Returns a list of segment conditions:
@@ -113,7 +117,6 @@ class imcap: #imcap == image capture
                         speed[i] = 8
                     else:
                         speed[i] = 9
-        print(speed_list)
         v = 100 * speed[0] + 10 * speed[1] + speed[2]
         return(v)
         
@@ -124,6 +127,7 @@ class imcap: #imcap == image capture
                 int(window.width * 0.21),
                 int(window.height * 0.27))
         
+        '''
         map_rect_l = (map_rect[0],
                  map_rect[1],
                  int(map_rect[2] * 0.5),
@@ -134,13 +138,39 @@ class imcap: #imcap == image capture
                  int(map_rect[2] * 0.5),
                  int(map_rect[3] * 0.5))    
 
+        '''
         speed_rect = (window.left + int(window.width * 0.805),
                   window.top + int(window.height * 0.82),
                   int(window.width * 0.08),
                   int(window.height * 0.05))
 
-        return(map_rect, map_rect_l, map_rect_r, speed_rect)
+        # return(map_rect, map_rect_l, map_rect_r, speed_rect)
+        return(map_rect, speed_rect)
 
+    
+    def get_brightness_amount(map_frame):
+        map_shape = map_frame.shape
+        map_frame = map_frame[0:int(map_shape[0]), int(map_shape[1] * 0.015):int(map_shape[1])]
+        map_shape = map_frame.shape
+
+        map_frame_l = map_frame[int(map_shape[0] / 2 - map_shape[0] / 5) : int(map_shape[0] / 2),
+                                int(map_shape[0] / 2 - map_shape[0] / 5) : int(map_shape[0] / 2)]
+
+        map_frame_r = map_frame[int(map_shape[0] / 2 - map_shape[0] / 5) : int(map_shape[0] / 2),
+                                int(map_shape[0] / 2) : int(map_shape[0] / 2 + map_shape[0] / 5)]
+
+        amount_l = np.average(map_frame_l)
+        amount_r = np.average(map_frame_r)
+        return(map_frame_l, map_frame_r, amount_l, amount_r)
+
+    def turning(amount_l, amount_r):
+        delta = amount_l - amount_r
+        if delta**2 <= 10:
+            return(Movements.gas)
+        elif delta > 0:
+            return(Movements.left)
+        elif delta < 0:
+            return(Movements.right)
 
 
 # Blurring mask:
@@ -157,20 +187,23 @@ while True:
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
-    map_rect, map_rect_l, map_rect_r, speed_rect = imcap.get_rects(window)[0:4]
+    # map_rect, map_rect_l, map_rect_r, speed_rect = Imcap.get_rects(window)[0:4]
+    map_rect, speed_rect = Imcap.get_rects(window)[0:4]
 
     nfs_map = np.array(pyautogui.screenshot(region=map_rect))
     nfs_speed = np.array(pyautogui.screenshot(region=speed_rect))
-    nfs_map_l = np.array(pyautogui.screenshot(region=map_rect_l))
-    nfs_map_r = np.array(pyautogui.screenshot(region=map_rect_r))
+
+    # nfs_map_l = np.array(pyautogui.screenshot(region=map_rect_l))
+    # nfs_map_r = np.array(pyautogui.screenshot(region=map_rect_r))
 
     (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # Darker speedometer pixels screening out
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
-    (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # Darker map pixels screening out
+    # (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # Darker map pixels screening out
     # nfs_map = cv2.morphologyEx(nfs_map, cv2.MORPH_CLOSE, kernel)
 
+    nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map)
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
@@ -180,11 +213,14 @@ while True:
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
 
-    # cv2.imshow("Left-side map", frame_map_l)
-    # cv2.imshow("Right-side map", frame_map_r)
+    cv2.imshow("Left-side map", frame_map_l)
+    cv2.imshow("Right-side map", frame_map_r)
 
-    speed_list = imcap.get_speed_list(frame_speed)
-    print(imcap.get_speed(speed_list))
+    speed_list = Imcap.get_speed_list(frame_speed)
+    print(Imcap.get_speed(speed_list))
+    print(amount_l, amount_r)
+
+    print()
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         cv2.imwrite('images/speed_screenshot.jpg', nfs_speed)
@@ -198,10 +234,9 @@ def color_pixel_count(img_r,img_l):
     '''
     Count number of pixels in diferent colors
     :param map_rect_r: right side of minimap
-    :param map_rect_l: left sude of mininap
+    :param map_rect_l: left side of mininap
     :return: n_l and n_r
     '''
-    # from PIL import *
 
     for pixel in map_rect_r.getdata():
         if pixel == (250,250,250) :
