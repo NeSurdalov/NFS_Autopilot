@@ -11,12 +11,6 @@ class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
         self.pressed = {'w': True, 'a': False, 's': False, 'd': False}
-        '''
-        self.w_pressed=False
-        self.s_pressed=False
-        self.a_pressed=False
-        self.d_pressed=False
-        '''
         
     def gas(self):
         if(self.pressed['s']): 
@@ -127,18 +121,6 @@ class Imcap: #Imcap == image capture
                 int(window.width * 0.21),
                 int(window.height * 0.27))
         
-        '''
-        map_rect_l = (map_rect[0],
-                 map_rect[1],
-                 int(map_rect[2] * 0.5),
-                 int(map_rect[3] * 0.5))
-
-        map_rect_r = (map_rect[0] + map_rect[2] * 0.5,
-                 map_rect[1],
-                 int(map_rect[2] * 0.5),
-                 int(map_rect[3] * 0.5))    
-
-        '''
         speed_rect = (window.left + int(window.width * 0.805),
                   window.top + int(window.height * 0.82),
                   int(window.width * 0.08),
@@ -146,13 +128,6 @@ class Imcap: #Imcap == image capture
 
         # return(map_rect, map_rect_l, map_rect_r, speed_rect)
         return(map_rect, speed_rect)
-
-
-    def map_calibration(map_frame):
-        for y in range(map_frame.shape[0]):
-            for x in range(map_frame.shape[1]):
-                if map_frame[y, x] == [241, 190, 133]:
-                    return(x, y)
     
     
     def get_brightness_amount(map_frame, x, y):
@@ -176,6 +151,12 @@ class Imcap: #Imcap == image capture
             return(Movements.left)
         elif delta < 0:
             return(Movements.right)
+    
+    def get_center(mask):
+        for y in range(int(mask.shape[0] / 3), mask.shape[0]):
+            for x in range(mask.shape[1]):
+                if mask[y, x] > 100:
+                    return(x, y)
 
 
 # Blurring mask:
@@ -192,23 +173,22 @@ while True:
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
-    # map_rect, map_rect_l, map_rect_r, speed_rect = Imcap.get_rects(window)[0:4]
     map_rect, speed_rect = Imcap.get_rects(window)[0:4]
 
     nfs_map = np.array(pyautogui.screenshot(region=map_rect))
     nfs_speed = np.array(pyautogui.screenshot(region=speed_rect))
 
-    # nfs_map_l = np.array(pyautogui.screenshot(region=map_rect_l))
-    # nfs_map_r = np.array(pyautogui.screenshot(region=map_rect_r))
-
     (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # Darker speedometer pixels screening out
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2RGB)
-    # (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # Darker map pixels screening out
-    # nfs_map = cv2.morphologyEx(nfs_map, cv2.MORPH_CLOSE, kernel)
 
-    nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map)
+    mask = cv2.inRange(nfs_map, np.array([100, 191, 116]), np.array([180, 255, 255]))
+    print(Imcap.get_center(mask))
+    x, y = (0,0) # FIXME get_center doesn't output a tuple for some reason
+
+
+    nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map, x, y)
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
