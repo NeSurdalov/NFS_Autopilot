@@ -147,17 +147,22 @@ class Imcap: #Imcap == image capture
         # return(map_rect, map_rect_l, map_rect_r, speed_rect)
         return(map_rect, speed_rect)
 
+
+    def map_calibration(map_frame):
+        for y in range(map_frame.shape[0]):
+            for x in range(map_frame.shape[1]):
+                if map_frame[y, x] == [241, 190, 133]:
+                    return(x, y)
     
-    def get_brightness_amount(map_frame):
-        map_shape = map_frame.shape
-        map_frame = map_frame[0:int(map_shape[0]), int(map_shape[1] * 0.015):int(map_shape[1])]
+    
+    def get_brightness_amount(map_frame, x, y):
         map_shape = map_frame.shape
 
-        map_frame_l = map_frame[int(map_shape[0] / 2 - map_shape[0] / 5) : int(map_shape[0] / 2),
-                                int(map_shape[0] / 2 - map_shape[0] / 5) : int(map_shape[0] / 2)]
+        map_frame_l = map_frame[int(y - map_shape[0] / 5) : y,
+                                int(x - map_shape[0] / 5) : x]
 
-        map_frame_r = map_frame[int(map_shape[0] / 2 - map_shape[0] / 5) : int(map_shape[0] / 2),
-                                int(map_shape[0] / 2) : int(map_shape[0] / 2 + map_shape[0] / 5)]
+        map_frame_r = map_frame[int(y - map_shape[0] / 5) : y,
+                                x : int(x + map_shape[0] / 5)]
 
         amount_l = np.average(map_frame_l)
         amount_r = np.average(map_frame_r)
@@ -199,7 +204,7 @@ while True:
     (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # Darker speedometer pixels screening out
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
-    nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
+    nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2RGB)
     # (thresh, nfs_map) = cv2.threshold(nfs_map, 180, 255, cv2.THRESH_BINARY)  # Darker map pixels screening out
     # nfs_map = cv2.morphologyEx(nfs_map, cv2.MORPH_CLOSE, kernel)
 
@@ -220,9 +225,8 @@ while True:
     print(Imcap.get_speed(speed_list))
     print(amount_l, amount_r)
 
-    print()
-
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        print(nfs_map[int(nfs_map.shape[0] / 2), int(nfs_map.shape[1] / 2)])
         cv2.imwrite('images/speed_screenshot.jpg', nfs_speed)
         cv2.imwrite('images/map_l.jpg', nfs_map_l)
         cv2.imwrite('images/map_r.jpg', nfs_map_r)
