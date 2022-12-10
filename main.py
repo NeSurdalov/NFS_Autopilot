@@ -8,7 +8,7 @@ import pygetwindow as gw
 import keyboard
 import time
 from datetime import datetime
-fps = 30
+fps = 60
 gisteresis_st=15
 gisteresis_th=5
 gisteresis_br=30
@@ -168,10 +168,18 @@ class Imcap: #Imcap == image capture
         elif delta < 0:
             return(Movements.right)
 
-    def limiter():
-        global fps
-        if(datetime.now().microsecond<Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
-        Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+    def limiter(): 
+        '''limits fps at fps global parameter'''
+        global fps 
+        if(Imcap.needed_time>=1e6):
+            if((datetime.now().microsecond<(Imcap.needed_time-1e6)) and (-Imcap.needed_time+2e6>datetime.now().microsecond)):
+                time.sleep(int(Imcap.needed_time-1e6-datetime.now().microsecond)%1e6/1e6)
+                #print(int(Imcap.needed_time-1e6-datetime.now().microsecond)%1e6/1e6, "up")
+        elif(datetime.now().microsecond<Imcap.needed_time): 
+            time.sleep(int(Imcap.needed_time-datetime.now().microsecond)%1e6/1e6)
+            #print(int(Imcap.needed_time-datetime.now().microsecond)%1e6/1e6, "down")
+        Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)
+        #print("eee", Imcap.needed_time, datetime.now().microsecond)
 
     def get_center(mask):
         for y in range(int(mask.shape[0] / 5), mask.shape[0]):
@@ -189,7 +197,6 @@ window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 
 while True:
-    Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
