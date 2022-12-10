@@ -13,6 +13,7 @@ gisteresis_st=15
 gisteresis_th=5
 gisteresis_br=30
 target_speed=60
+amount_dif = 10
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -169,8 +170,14 @@ class Imcap: #Imcap == image capture
 
     def limiter():
         global fps
-        if(datetime.now().microsecond<(Imcap.prev_time+1e6/fps)): time.sleep((Imcap.prev_time+1e6/fps-datetime.now().microsecond)/1e6)
-        Imcap.prev_time=datetime.now().microsecond  #FIXME freezes every 3 seconds
+        if(datetime.now().microsecond<Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
+        Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+
+    def get_center(mask):
+        for y in range(int(mask.shape[0] / 5), mask.shape[0]):
+            for x in range(int(mask.shape[1] / 5), mask.shape[1]):
+                if mask[y, x] > 100:
+                    return(x, y)
 
     def get_center(mask):
         for y in range(int(mask.shape[0] / 5), mask.shape[0]):
@@ -237,12 +244,17 @@ while True:
     elif(amount_r<amount_l):
         move.right()
     #throttle control
-    if((target_speed-speed)>gisteresis_th):
+    if((amount_l-amount_dif) <= amount_r => (amount_l + amount_dif)):
         move.gas()
     elif((speed-target_speed)>gisteresis_br):
         move.brake()
-    elif(): move.roll()'''
-    
+    elif(): move.roll()
+
+    # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
+    #     nitro = 1
+    # print(n_r, n_l, right, left, turn, nitro)'''
+
+
 
     print()
 
