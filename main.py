@@ -71,7 +71,7 @@ move=Movements()
 
 class Imcap: #Imcap == image capture
     '''Class for working with image capturing'''
-    prev_time=datetime.now().microsecond
+    needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
     # Returns a list of segment conditions:
     def get_speed_list(img):
         offset = 30

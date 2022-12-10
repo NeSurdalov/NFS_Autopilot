@@ -70,31 +70,31 @@ def speed_determination(v, n_r, n_l, n_r2, n_l2):
     '''
 
     r = 100
-"""
-Рассчитывает скорости вправо и влево
-"""
-    v_r = (n_r/(n_l+n_r))*np.exp(v*dt/dx)
-    v_l = (n_l/(n_l+n_r))*np.exp(v*dt/dx)
-if v_r => v_l :
-    turn = v_r
-    right = 1
-    left = 0
-else :
-    turn = v_l
-    left = 1
-    right = 0
+    """
+    Рассчитывает скорости вправо и влево
+    """
+        v_r = (n_r/(n_l+n_r))*np.exp(v*dt/dx)
+        v_l = (n_l/(n_l+n_r))*np.exp(v*dt/dx)
+    if v_r => v_l :
+        turn = v_r
+        right = 1
+        left = 0
+    else :
+        turn = v_l
+        left = 1
+        right = 0
 
-if v_l - r <= v_r = > v_l + r:
-    v_r = v_l = 0
+    if v_l - r <= v_r = > v_l + r:
+        v_r = v_l = 0
 
-""" Начинает разгоняться """
+    """ Начинает разгоняться """
 
-if n_r - 10 <= n_l = > n_r + 10:
-    v_s += 10
+    if n_r - 10 <= n_l = > n_r + 10:
+        v_s += 10
 
-if n_r2 - 10 <= n_l2 = > n_r2 + 10:
-    nitro = 1
-print(n_r, n_l, right, left, turn, nitro)
+    if n_r2 - 10 <= n_l2 = > n_r2 + 10:
+        nitro = 1
+    print(n_r, n_l, right, left, turn, nitro)
 
 while True:
     window_rect = (120, 650, 220, 220)  # область работыOpenCV
