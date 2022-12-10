@@ -168,8 +168,8 @@ class Imcap: #Imcap == image capture
             return(Movements.right)
     def limiter():
         global fps
-        if(datetime.now().microsecond<(Imcap.prev_time+1e6/fps)): time.sleep((Imcap.prev_time+1e6/fps-datetime.now().microsecond)/1e6)
-        Imcap.prev_time=datetime.now().microsecond  #FIXME freezes every 3 seconds
+        if(datetime.now().microsecond<Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
+        Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
 
 # Blurring mask:
 kernel = np.ones((20, 20), 'uint8')
