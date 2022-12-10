@@ -179,12 +179,6 @@ class Imcap: #Imcap == image capture
                 if mask[y, x] > 100:
                     return(x, y)
 
-    def get_center(mask):
-        for y in range(int(mask.shape[0] / 5), mask.shape[0]):
-            for x in range(int(mask.shape[1] / 5), mask.shape[1]):
-                if mask[y, x] > 100:
-                    return(x, y)
-
 # Blurring mask:
 kernel = np.ones((20, 20), 'uint8')
 
