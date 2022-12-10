@@ -10,10 +10,11 @@ import time
 from datetime import datetime
 fps = 30
 gisteresis_st=15
-gisteresis_th=5
+gisteresis_th=10
 gisteresis_br=30
 target_speed=60
 amount_dif = 10
+size=0.1
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -146,7 +147,8 @@ class Imcap: #Imcap == image capture
         return(map_rect, speed_rect)
     
     def get_brightness_amount(map_frame, x, y):
-        a = int(map_frame.shape[0] * 0.1)
+        global size
+        a = int(map_frame.shape[0] * size)
 
         map_frame_l = map_frame[y - a : y,
                                 x - a : x]
@@ -186,7 +188,7 @@ window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
-
+time.sleep(10)
 while True:
     #Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
@@ -234,14 +236,14 @@ while True:
     print(speed)
     
     #steering control
-    '''if(abs(amount_l-amount_r)<gisteresis_st):
+    if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
     elif(amount_r>amount_l):
         move.left()
     elif(amount_r<amount_l):
         move.right()
     #throttle control
-    if((amount_l-amount_dif) <= amount_r => (amount_l + amount_dif)):
+    if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
         move.gas()
     elif((speed-target_speed)>gisteresis_br):
         move.brake()
@@ -249,7 +251,7 @@ while True:
 
     # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
     #     nitro = 1
-    # print(n_r, n_l, right, left, turn, nitro)'''
+    # print(n_r, n_l, right, left, turn, nitro)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
