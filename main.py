@@ -13,6 +13,7 @@ gisteresis_st=15
 gisteresis_th=5
 gisteresis_br=30
 target_speed=60
+amount_dif = 10
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -166,10 +167,17 @@ class Imcap: #Imcap == image capture
             return(Movements.left)
         elif delta < 0:
             return(Movements.right)
+
     def limiter():
         global fps
         if(datetime.now().microsecond<Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
         Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+
+    def get_center(mask):
+        for y in range(int(mask.shape[0] / 5), mask.shape[0]):
+            for x in range(int(mask.shape[1] / 5), mask.shape[1]):
+                if mask[y, x] > 100:
+                    return(x, y)
 
 # Blurring mask:
 kernel = np.ones((20, 20), 'uint8')
@@ -194,29 +202,34 @@ while True:
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2RGB)
+    hsv = cv2.cvtColor(nfs_map, cv2.COLOR_RGB2HSV)
+    lower_orange = np.array([100, 191, 116])
+    upper_orange = np.array([180, 255, 255])
+    mask = cv2.inRange(hsv, np.array([101, 72, 40]), np.array([255, 255, 255]))
+    print(Imcap.get_center(mask))
+    center = Imcap.get_center(mask)
+    if center != None:
+        x, y = center
+        nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map, x, y)
+        frame_map_l = np.array(nfs_map_l)
+        frame_map_r = np.array(nfs_map_r)
+        frame_map_l = np.array(nfs_map_l)
+        frame_map_r = np.array(nfs_map_r)
 
-    mask = cv2.inRange(nfs_map, np.array([100, 191, 116]), np.array([180, 255, 255]))
-    #print(Imcap.get_center(mask))
-    x, y = (0,0) # FIXME get_center doesn't output a tuple for some reason
-
-
-    nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map, x, y)
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
-    frame_map_l = np.array(nfs_map_l)
-    frame_map_r = np.array(nfs_map_r)
-
+    frame_mask = np.array(mask)
+    
+    
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
 
-    cv2.imshow("Left-side map", frame_map_l)
-    cv2.imshow("Right-side map", frame_map_r)
 
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
     print(speed)
-    print(amount_l, amount_r)
+    # print(amount_l, amount_r)
     #steering control
     '''if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
@@ -225,12 +238,17 @@ while True:
     elif(amount_r<amount_l):
         move.right()
     #throttle control
-    if((target_speed-speed)>gisteresis_th):
+    if((amount_l-amount_dif) <= amount_r => (amount_l + amount_dif)):
         move.gas()
     elif((speed-target_speed)>gisteresis_br):
         move.brake()
-    elif(): move.roll()'''
-    
+    elif(): move.roll()
+
+    # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
+    #     nitro = 1
+    # print(n_r, n_l, right, left, turn, nitro)'''
+
+
 
     print()
 
