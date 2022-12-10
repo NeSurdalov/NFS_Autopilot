@@ -158,7 +158,7 @@ class Imcap: #Imcap == image capture
         amount_l = np.average(map_frame_l)
         amount_r = np.average(map_frame_r)
         return(map_frame_l, map_frame_r, amount_l, amount_r)
-
+    
     def turning(amount_l, amount_r):
         delta = amount_l - amount_r #not used
         if delta**2 <= 10:
@@ -174,8 +174,8 @@ class Imcap: #Imcap == image capture
         Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
 
     def get_center(mask):
-        for y in range(int(mask.shape[0] / 5), mask.shape[0]):
-            for x in range(int(mask.shape[1] / 5), mask.shape[1]):
+        for y in range(int(mask.shape[0] / 3), int(mask.shape[0] * 2 / 3)):
+            for x in range(int(mask.shape[1] / 3), int(mask.shape[1] * 2 / 3)):
                 if mask[y, x] > 100:
                     return(x, y)
 
@@ -207,13 +207,17 @@ while True:
     upper_orange = np.array([180, 255, 255])
     mask = cv2.inRange(hsv, np.array([101, 72, 40]), np.array([255, 255, 255]))
     print(Imcap.get_center(mask))
-    center = Imcap.get_center(mask)
-    if center != None:
-        x, y = center
+
+    try:
+        x, y = Imcap.get_center(mask)
         nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map, x, y)
         frame_map_l = np.array(nfs_map_l)
         frame_map_r = np.array(nfs_map_r)
-
+        cv2.imshow("Left-side map", frame_map_l)
+        cv2.imshow("Right-side map", frame_map_r)
+        print(amount_l, amount_r)
+    except:
+        continue
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
@@ -221,14 +225,12 @@ while True:
     
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
-    cv2.imshow("Left-side map", frame_map_l)
-    cv2.imshow("Right-side map", frame_map_r)
 
 
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
     print(speed)
-    print(amount_l, amount_r)
+    
     #steering control
     '''if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
@@ -247,26 +249,17 @@ while True:
     #     nitro = 1
     # print(n_r, n_l, right, left, turn, nitro)'''
 
-
-
-    print()
-
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        print(nfs_map[int(nfs_map.shape[0] / 2), int(nfs_map.shape[1] / 2)])
-        cv2.imwrite('images/speed_screenshot.jpg', nfs_speed)
-        cv2.imwrite('images/map_l.jpg', nfs_map_l)
-        cv2.imwrite('images/map_r.jpg', nfs_map_r)
-        cv2.imwrite('images/map.jpg', nfs_map)
         break
-
-
+cv2.destroyAllWindows()
+'''
 def color_pixel_count(img_r,img_l):
-    '''
+    
     Count number of pixels in diferent colors
     :param map_rect_r: right side of minimap
     :param map_rect_l: left side of mininap
     :return: n_l and n_r
-    '''
+    
 
     for pixel in map_rect_r.getdata():
         if pixel == (250,250,250) :
@@ -275,3 +268,4 @@ def color_pixel_count(img_r,img_l):
     for pixel in map_rect_l.getdata():
         if pixel == (250,250,250) :
             n_l += 1
+'''
