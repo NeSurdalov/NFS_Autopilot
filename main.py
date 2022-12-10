@@ -222,20 +222,13 @@ while True:
         frame_map_r = np.array(nfs_map_r)
         cv2.imshow("Left-side map", frame_map_l)
         cv2.imshow("Right-side map", frame_map_r)
-        cv2.imshow("Threshed map", threshed_map)
         print(amount_l, amount_r)
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
     
-    
-    cv2.imshow("Map", frame_map)
-    cv2.imshow("Speed", frame_speed)
-
-
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
-    print(speed)
     
     #steering control
     if(abs(amount_l-amount_r)<gisteresis_st):
