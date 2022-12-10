@@ -8,7 +8,7 @@ import pygetwindow as gw
 import keyboard
 import time
 from datetime import datetime
-fps = 60
+fps = 30
 gisteresis_st=15
 gisteresis_th=5
 gisteresis_br=30
@@ -103,15 +103,14 @@ class Imcap: #Imcap == image capture
         speed = [0,0,0]
         for i in range(3):
             if speed_list[i][0] == 255:
-
-                if speed_list[i][2] == speed_list[i][5] == 0 and speed_list[i][1]==255:
+                if speed_list[i][3] == 255 :
+                    speed[i] = 0
+                if speed_list[i][2] == speed_list[i][5] == 0:
                     speed[i] = 1
                 elif speed_list[i][3] == 0:
                     speed[i] = 4
             elif speed_list[i][0] == 0:
-                if speed_list[i][3] == 255 :
-                    speed[i] = 0
-                if speed_list[i][3] == 255 and speed_list[i][4] == 255:
+                if speed_list[i][3] == 255:
                     speed[i] = 7
                 elif speed_list[i][2] == 255:
                     if speed_list[i][4] == 0:
@@ -123,7 +122,7 @@ class Imcap: #Imcap == image capture
                         speed[i] = 2
                     else:
                         speed[i] = 3
-                elif speed_list[i][1] == 0 == speed_list[i][2] and speed_list[i][3] == 0:
+                elif speed_list[i][1] == 0 == speed_list[i][2]:
                     if speed_list[i][4] == 0:
                         speed[i] = 8
                     else:
@@ -146,15 +145,14 @@ class Imcap: #Imcap == image capture
         # return(map_rect, map_rect_l, map_rect_r, speed_rect)
         return(map_rect, speed_rect)
     
-    
     def get_brightness_amount(map_frame, x, y):
-        map_shape = map_frame.shape
+        a = int(map_frame.shape[0] * 0.1)
 
-        map_frame_l = map_frame[int(y - map_shape[0] / 5) : y,
-                                int(x - map_shape[0] / 5) : x]
+        map_frame_l = map_frame[y - a : y,
+                                x - a : x]
 
-        map_frame_r = map_frame[int(y - map_shape[0] / 5) : y,
-                                x : int(x + map_shape[0] / 5)]
+        map_frame_r = map_frame[y - a : y,
+                                x : x + a]
 
         amount_l = np.average(map_frame_l)
         amount_r = np.average(map_frame_r)
@@ -169,18 +167,10 @@ class Imcap: #Imcap == image capture
         elif delta < 0:
             return(Movements.right)
 
-    def limiter(): 
-        '''limits fps at fps global parameter'''
-        global fps 
-        if(Imcap.needed_time>=1e6):
-            if((datetime.now().microsecond<(Imcap.needed_time-1e6)) and (-Imcap.needed_time+2e6>datetime.now().microsecond)):
-                time.sleep(int(Imcap.needed_time-1e6-datetime.now().microsecond)%1e6/1e6)
-                #print(int(Imcap.needed_time-1e6-datetime.now().microsecond)%1e6/1e6, "up")
-        elif(datetime.now().microsecond<Imcap.needed_time): 
-            time.sleep(int(Imcap.needed_time-datetime.now().microsecond)%1e6/1e6)
-            #print(int(Imcap.needed_time-datetime.now().microsecond)%1e6/1e6, "down")
-        Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)
-        #print("eee", Imcap.needed_time, datetime.now().microsecond)
+    def limiter():
+        global fps
+        if(datetime.now().microsecond<Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
+        Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
 
     def get_center(mask):
         for y in range(int(mask.shape[0] / 3), int(mask.shape[0] * 2 / 3)):
@@ -198,6 +188,7 @@ window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 
 while True:
+    Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
@@ -217,9 +208,10 @@ while True:
 
     try:
         x, y = Imcap.get_center(mask)
-        (thresh, threshed_map) = cv2.threshold(nfs_map, 150, 255, cv2.THRESH_BINARY)
         threshed_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
-        nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map, x, y)
+        (thresh, threshed_map) = cv2.threshold(nfs_map, 150, 255, cv2.THRESH_BINARY)
+        threshed_map = cv2.cvtColor(threshed_map, cv2.COLOR_BGR2GRAY)
+        nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(threshed_map, x, y)
         frame_map_l = np.array(nfs_map_l)
         frame_map_r = np.array(nfs_map_r)
         cv2.imshow("Left-side map", frame_map_l)
@@ -239,7 +231,6 @@ while True:
 
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
-    print(speed_list)
     print(speed)
     
     #steering control
