@@ -240,9 +240,9 @@ while True:
     #steering control
     if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
-    elif(amount_r>amount_l):
-        move.left()
     elif(amount_r<amount_l):
+        move.left()
+    elif(amount_r>amount_l):
         move.right()
     #throttle control
     if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
