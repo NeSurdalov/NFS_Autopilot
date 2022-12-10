@@ -213,23 +213,22 @@ while True:
         nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(nfs_map, x, y)
         frame_map_l = np.array(nfs_map_l)
         frame_map_r = np.array(nfs_map_r)
-        frame_map_l = np.array(nfs_map_l)
-        frame_map_r = np.array(nfs_map_r)
 
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
-    frame_mask = np.array(mask)
     
     
     cv2.imshow("Map", frame_map)
     cv2.imshow("Speed", frame_speed)
+    cv2.imshow("Left-side map", frame_map_l)
+    cv2.imshow("Right-side map", frame_map_r)
 
 
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
     print(speed)
-    # print(amount_l, amount_r)
+    print(amount_l, amount_r)
     #steering control
     '''if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
