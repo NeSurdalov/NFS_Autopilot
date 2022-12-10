@@ -103,14 +103,15 @@ class Imcap: #Imcap == image capture
         speed = [0,0,0]
         for i in range(3):
             if speed_list[i][0] == 255:
-                if speed_list[i][3] == 255 :
-                    speed[i] = 0
-                if speed_list[i][2] == speed_list[i][5] == 0:
+
+                if speed_list[i][2] == speed_list[i][5] == 0 and speed_list[i][1]==255:
                     speed[i] = 1
                 elif speed_list[i][3] == 0:
                     speed[i] = 4
             elif speed_list[i][0] == 0:
-                if speed_list[i][3] == 255:
+                if speed_list[i][3] == 255 :
+                    speed[i] = 0
+                if speed_list[i][3] == 255 and speed_list[i][4] == 255:
                     speed[i] = 7
                 elif speed_list[i][2] == 255:
                     if speed_list[i][4] == 0:
@@ -122,7 +123,7 @@ class Imcap: #Imcap == image capture
                         speed[i] = 2
                     else:
                         speed[i] = 3
-                elif speed_list[i][1] == 0 == speed_list[i][2]:
+                elif speed_list[i][1] == 0 == speed_list[i][2] and speed_list[i][3] == 0:
                     if speed_list[i][4] == 0:
                         speed[i] = 8
                     else:
@@ -229,6 +230,7 @@ while True:
 
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
+    print(speed_list)
     print(speed)
     
     #steering control
