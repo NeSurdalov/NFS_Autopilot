@@ -13,6 +13,7 @@ gisteresis_st=15
 gisteresis_th=5
 gisteresis_br=30
 target_speed=60
+amount_dif = 10
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -217,20 +218,25 @@ while True:
     speed=Imcap.get_speed(speed_list)
     print(speed)
     print(amount_l, amount_r)
-    #steering control
-    '''if(abs(amount_l-amount_r)<gisteresis_st):
+    ''''#steering control
+    if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
     elif(amount_r>amount_l):
         move.left()
     elif(amount_r<amount_l):
         move.right()
     #throttle control
-    if((target_speed-speed)>gisteresis_th):
+    if((amount_l-amount_dif) <= amount_r => (amount_l + amount_dif)):
         move.gas()
     elif((speed-target_speed)>gisteresis_br):
         move.brake()
-    elif(): move.roll()'''
-    
+    elif(): move.roll()
+
+    # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
+    #     nitro = 1
+    # print(n_r, n_l, right, left, turn, nitro)'''
+
+
 
     print()
 
