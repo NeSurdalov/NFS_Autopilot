@@ -70,7 +70,7 @@ move=Movements()
 
 class Imcap: #Imcap == image capture
     '''Class for working with image capturing'''
-    prev_time=datetime.now().microsecond
+    needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
     # Returns a list of segment conditions:
     def get_speed_list(img):
         offset = 30
@@ -196,7 +196,7 @@ while True:
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2RGB)
 
     mask = cv2.inRange(nfs_map, np.array([100, 191, 116]), np.array([180, 255, 255]))
-    print(Imcap.get_center(mask))
+    #print(Imcap.get_center(mask))
     x, y = (0,0) # FIXME get_center doesn't output a tuple for some reason
 
 
