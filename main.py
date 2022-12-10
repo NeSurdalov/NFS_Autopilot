@@ -191,7 +191,7 @@ window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
 
 while True:
-    Imcap.limiter()
+    #Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
