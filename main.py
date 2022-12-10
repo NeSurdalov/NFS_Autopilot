@@ -9,12 +9,12 @@ import keyboard
 import time
 from datetime import datetime
 fps = 30
-gisteresis_st=15
+gisteresis_st=20
 gisteresis_th=10
 gisteresis_br=30
 target_speed=60
-amount_dif = 10
-size=0.1
+amount_dif = gisteresis_st
+size=0.05
 class Movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
@@ -64,6 +64,11 @@ class Movements:
         if(self.pressed['d']): 
             keyboard.release("d")
             self.pressed['d'] = False
+    def realise_all(self):
+        keyboard.release("w")
+        keyboard.release("a")
+        keyboard.release("s")
+        keyboard.release("d")
 
     
         
@@ -258,6 +263,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cv2.destroyAllWindows()
+move.realise_all()
 '''
 def color_pixel_count(img_r,img_l):
     
