@@ -109,9 +109,10 @@ class Imcap: #Imcap == image capture
                     speed[i] = 1
                 elif speed_list[i][3] == 0:
                     speed[i] = 4
+
             elif speed_list[i][0] == 0:
                 if speed_list[i][3] == 255:
-                    speed[i] = 7
+                    speed[i] = 0
                 elif speed_list[i][2] == 255:
                     if speed_list[i][4] == 0:
                         speed[i] = 6
@@ -127,6 +128,8 @@ class Imcap: #Imcap == image capture
                         speed[i] = 8
                     else:
                         speed[i] = 9
+                elif speed_list[i][2] == 0:
+                    speed[i] = 7
         v = 100 * speed[0] + 10 * speed[1] + speed[2]
         return(v)
         
@@ -204,10 +207,11 @@ while True:
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2RGB)
     hsv = cv2.cvtColor(nfs_map, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, np.array([101, 72, 40]), np.array([255, 255, 255]))
-    print(Imcap.get_center(mask))
+    center = Imcap.get_center(mask)
+    print(center)    
 
-    try:
-        x, y = Imcap.get_center(mask)
+    if center != None:
+        x, y = center
         threshed_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
         (thresh, threshed_map) = cv2.threshold(nfs_map, 150, 255, cv2.THRESH_BINARY)
         threshed_map = cv2.cvtColor(threshed_map, cv2.COLOR_BGR2GRAY)
@@ -218,8 +222,6 @@ while True:
         cv2.imshow("Right-side map", frame_map_r)
         cv2.imshow("Threshed map", threshed_map)
         print(amount_l, amount_r)
-    except:
-        continue
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
