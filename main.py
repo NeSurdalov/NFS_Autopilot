@@ -6,12 +6,10 @@ from PIL import Image
 import pyautogui
 import pygetwindow as gw
 import keyboard
-import vgamepad as vg
 import time
 from datetime import datetime
-pad = vg.VX360Gamepad()
 fps = 30
-gisteresis_st=5
+gisteresis_st=20
 gisteresis_th=10
 gisteresis_br=30
 target_speed=60
@@ -20,38 +18,72 @@ size=0.05
 
 class Steering:
     def steering_amount(v, amount_l, amount_r):
-        turn = (amount_r - amount_l) * (v / 220) / (amount_r + amount_l)
-        if turn > 1:
-            turn = 1
-        return(turn * 100)
+        if amount_l + amount_r == 0:
+            return(0)
+        else:
+            turn = (amount_r - amount_l) * (v / 220) / (amount_r + amount_l)
+            if turn > 100:
+                turn = 100
+            return(turn * 100)
 
-class move:
+class Movements:
     '''use move. method to: do some of this things:'''
+    def __init__(self):
+        self.pressed = {'w': True, 'a': False, 's': False, 'd': False}
         
-    def gas(value=100):
-        gain=int(value/100*255) 
-        pad.left_trigger(0)
-        pad.right_trigger(gain)
+    def gas(self):
+        if(self.pressed['s']): 
+            keyboard.release("s")
+            self.pressed['s'] = False
+        keyboard.press("w")
+        self.pressed['w'] = True
 
-    def brake(value=100):
-        gain=int(value/100*255) 
-        pad.right_trigger(0)
-        pad.left_trigger(gain)
+    def brake(self):
+        if(self.pressed['w']): 
+            keyboard.release("w")
+            self.pressed['w'] = False
+        keyboard.press("s")
+        self.pressed['s'] = True
 
-    def roll():
-        pad.right_trigger(0)
-        pad.left_trigger(0)
+    def roll(self):
+        if(self.pressed['w']): 
+            keyboard.release("w")
+            self.pressed['w'] = False
+        if(self.pressed['s']): 
+            keyboard.release("s")
+            self.pressed['s'] = False
 
 
-    def turn(value=100):
-        gain=int(value/100*32767)
-        pad.left_joystick(x_value=gain,y_value=0)
-    def update():
-        pad.update()
-    def realise_all():
-        pad.reset()
-        pad.update()
+    def left(self):
+        if(self.pressed['d']): 
+            keyboard.release("d")
+            self.pressed['d'] = False
+        keyboard.press("a")
+        self.pressed['a'] = True
 
+    def right(self):
+        if(self.pressed['a']): 
+            keyboard.release("a")
+            self.pressed['a'] = False
+        keyboard.press("d")
+        self.pressed['d'] = True
+    
+    def straight(self):
+        if(self.pressed['a']): 
+            keyboard.release("a")
+            self.pressed['a'] = False
+        if(self.pressed['d']): 
+            keyboard.release("d")
+            self.pressed['d'] = False
+    def realise_all(self):
+        keyboard.release("w")
+        keyboard.release("a")
+        keyboard.release("s")
+        keyboard.release("d")
+
+    
+        
+move=Movements()
 
 
 class Imcap: #Imcap == image capture
@@ -183,7 +215,7 @@ window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
-
+time.sleep(10)
 while True:
     #Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
@@ -254,20 +286,3 @@ while True:
         break
 cv2.destroyAllWindows()
 move.realise_all()
-'''
-def color_pixel_count(img_r,img_l):
-    
-    Count number of pixels in diferent colors
-    :param map_rect_r: right side of minimap
-    :param map_rect_l: left side of mininap
-    :return: n_l and n_r
-    
-
-    for pixel in map_rect_r.getdata():
-        if pixel == (250,250,250) :
-            n_r += 1
-
-    for pixel in map_rect_l.getdata():
-        if pixel == (250,250,250) :
-            n_l += 1
-'''
