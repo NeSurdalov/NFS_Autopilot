@@ -18,7 +18,7 @@ size=0.05
 
 class Steering:
     def steering_amount(v, amount_l, amount_r):
-        turn = (amount_r - amount_l)  * np.sqrt(v)
+        turn = (amount_r - amount_l) * (v / 220) / (amount_r + amount_l)
         return(turn)
 
 class Movements:
@@ -240,7 +240,7 @@ while True:
         cv2.imshow("Right-side map", frame_map_r)
         print(Steering.steering_amount(speed, amount_l, amount_r))
 
-    
+    '''
     #steering control
     if(abs(amount_l-amount_r)<gisteresis_st):
         move.straight()
@@ -254,8 +254,7 @@ while True:
     elif((speed-target_speed)>gisteresis_br):
         move.brake()
     elif(): move.roll()
-    
-    
+    '''  
     # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
     #     nitro = 1
     # print(n_r, n_l, right, left, turn, nitro)
