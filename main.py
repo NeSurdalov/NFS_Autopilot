@@ -14,9 +14,15 @@ fps = 30
 gisteresis_st=5
 gisteresis_th=10
 gisteresis_br=30
-target_speed=30
-amount_dif = 2
-size=0.1
+target_speed=60
+amount_dif = gisteresis_st
+size=0.05
+
+class Steering:
+    def steering_amount(v, amount_l, amount_r):
+        turn = (amount_r - amount_l) * (v / 220) / (amount_r + amount_l)
+        return(turn)
+
 class move:
     '''use move. method to: do some of this things:'''
         
@@ -110,7 +116,7 @@ class Imcap: #Imcap == image capture
         v = 100 * speed[0] + 10 * speed[1] + speed[2]
         return(v)
         
-    # Breaks the window rect into different rects for the further processing of the ones
+    # Splits the window for the further analysis of each part
     def get_rects(window):
         map_rect = (window.left + int(window.width * 0.055),
                 window.top + int(window.height * 0.65),
@@ -194,8 +200,13 @@ while True:
     hsv = cv2.cvtColor(nfs_map, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, np.array([101, 72, 40]), np.array([255, 255, 255]))
     center = Imcap.get_center(mask)
-    print(center)    
 
+    frame_speed = np.array(nfs_speed)
+    frame_map = np.array(nfs_map)
+    
+    speed_list = Imcap.get_speed_list(frame_speed)
+    speed=Imcap.get_speed(speed_list)
+    
     if center != None:
         x, y = center
         threshed_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
@@ -206,24 +217,23 @@ while True:
         frame_map_r = np.array(nfs_map_r)
         cv2.imshow("Left-side map", frame_map_l)
         cv2.imshow("Right-side map", frame_map_r)
-        print(amount_l, amount_r)
-        #steering control
-        move.turn(int(-amount_l+amount_r)/5)
-        #throttle control
-        if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
-            move.gas()
-        elif((speed-target_speed)>gisteresis_br):
-            move.brake()
-        elif(): move.roll()
-        move.update()
+        print(Steering.steering_amount(speed, amount_l, amount_r))
 
-    frame_speed = np.array(nfs_speed)
-    frame_map = np.array(nfs_map)
-    
-    speed_list = Imcap.get_speed_list(frame_speed)
-    speed=Imcap.get_speed(speed_list)
-    
-
+    '''
+    #steering control
+    if(abs(amount_l-amount_r)<gisteresis_st):
+        move.straight()
+    elif(amount_r<amount_l):
+        move.left()
+    elif(amount_r>amount_l):
+        move.right()
+    #throttle control
+    if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
+        move.gas()
+    elif((speed-target_speed)>gisteresis_br):
+        move.brake()
+    elif(): move.roll()
+    '''  
     # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
     #     nitro = 1
     # print(n_r, n_l, right, left, turn, nitro)
