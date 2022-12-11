@@ -20,7 +20,7 @@ size=0.05
 
 class Steering:
     def steering_amount(v, amount_l, amount_r):
-        turn = (amount_r - amount_l) * (- np.cos(v / 220) + 1) / (amount_r + amount_l)
+        turn = (amount_r - amount_l) * (v / 220) / (amount_r + amount_l)
         if turn > 1:
             turn = 1
         return(turn * 100)
@@ -173,7 +173,7 @@ kernel = np.ones((20, 20), 'uint8')
 time.sleep(5)
 move.gas()
 pad.update()
-time.sleep(0.5)
+time.sleep(5)
 move.roll()
 pad.update()
 time.sleep(5)
@@ -220,6 +220,16 @@ while True:
         cv2.imshow("Left-side map", frame_map_l)
         cv2.imshow("Right-side map", frame_map_r)
         print(Steering.steering_amount(speed, amount_l, amount_r))
+        move.turn(Steering.steering_amount(speed, amount_l, amount_r))
+        if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
+            move.gas()
+            print("gas")
+        elif((speed-target_speed)>gisteresis_br):
+            #move.brake()
+            pass
+        elif(): move.roll()
+        move.update()
+
 
     '''
     #steering control
