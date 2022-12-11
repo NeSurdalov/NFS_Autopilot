@@ -6,73 +6,44 @@ from PIL import Image
 import pyautogui
 import pygetwindow as gw
 import keyboard
+import vgamepad as vg
 import time
 from datetime import datetime
+pad = vg.VX360Gamepad()
 fps = 30
-gisteresis_st=20
+gisteresis_st=5
 gisteresis_th=10
 gisteresis_br=30
-target_speed=60
-amount_dif = gisteresis_st
-size=0.05
-class Movements:
+target_speed=30
+amount_dif = 2
+size=0.1
+class move:
     '''use move. method to: do some of this things:'''
-    def __init__(self):
-        self.pressed = {'w': True, 'a': False, 's': False, 'd': False}
         
-    def gas(self):
-        if(self.pressed['s']): 
-            keyboard.release("s")
-            self.pressed['s'] = False
-        keyboard.press("w")
-        self.pressed['w'] = True
+    def gas(value=100):
+        gain=int(value/100*255) 
+        pad.left_trigger(0)
+        pad.right_trigger(gain)
 
-    def brake(self):
-        if(self.pressed['w']): 
-            keyboard.release("w")
-            self.pressed['w'] = False
-        keyboard.press("s")
-        self.pressed['s'] = True
+    def brake(value=100):
+        gain=int(value/100*255) 
+        pad.right_trigger(0)
+        pad.left_trigger(gain)
 
-    def roll(self):
-        if(self.pressed['w']): 
-            keyboard.release("w")
-            self.pressed['w'] = False
-        if(self.pressed['s']): 
-            keyboard.release("s")
-            self.pressed['s'] = False
+    def roll():
+        pad.right_trigger(0)
+        pad.left_trigger(0)
 
 
-    def left(self):
-        if(self.pressed['d']): 
-            keyboard.release("d")
-            self.pressed['d'] = False
-        keyboard.press("a")
-        self.pressed['a'] = True
+    def turn(value=100):
+        gain=int(value/100*32767)
+        pad.left_joystick(x_value=gain,y_value=0)
+    def update():
+        pad.update()
+    def realise_all():
+        pad.reset()
+        pad.update()
 
-    def right(self):
-        if(self.pressed['a']): 
-            keyboard.release("a")
-            self.pressed['a'] = False
-        keyboard.press("d")
-        self.pressed['d'] = True
-    
-    def straight(self):
-        if(self.pressed['a']): 
-            keyboard.release("a")
-            self.pressed['a'] = False
-        if(self.pressed['d']): 
-            keyboard.release("d")
-            self.pressed['d'] = False
-    def realise_all(self):
-        keyboard.release("w")
-        keyboard.release("a")
-        keyboard.release("s")
-        keyboard.release("d")
-
-    
-        
-move=Movements()
 
 
 class Imcap: #Imcap == image capture
@@ -191,12 +162,20 @@ class Imcap: #Imcap == image capture
 # Blurring mask:
 kernel = np.ones((20, 20), 'uint8')
 
+time.sleep(5)
+move.gas()
+pad.update()
+time.sleep(0.5)
+move.roll()
+pad.update()
+time.sleep(5)
+
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 window = gw.getWindowsWithTitle(window_name)[0]
 window.activate()
-time.sleep(10)
+
 while True:
     #Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
@@ -228,6 +207,15 @@ while True:
         cv2.imshow("Left-side map", frame_map_l)
         cv2.imshow("Right-side map", frame_map_r)
         print(amount_l, amount_r)
+        #steering control
+        move.turn(int(-amount_l+amount_r)/5)
+        #throttle control
+        if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
+            move.gas()
+        elif((speed-target_speed)>gisteresis_br):
+            move.brake()
+        elif(): move.roll()
+        move.update()
 
     frame_speed = np.array(nfs_speed)
     frame_map = np.array(nfs_map)
@@ -235,19 +223,6 @@ while True:
     speed_list = Imcap.get_speed_list(frame_speed)
     speed=Imcap.get_speed(speed_list)
     
-    #steering control
-    if(abs(amount_l-amount_r)<gisteresis_st):
-        move.straight()
-    elif(amount_r<amount_l):
-        move.left()
-    elif(amount_r>amount_l):
-        move.right()
-    #throttle control
-    if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
-        move.gas()
-    elif((speed-target_speed)>gisteresis_br):
-        move.brake()
-    elif(): move.roll()
 
     # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
     #     nitro = 1
