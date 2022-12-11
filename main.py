@@ -18,8 +18,10 @@ size=0.05
 
 class Steering:
     def steering_amount(v, amount_l, amount_r):
-        turn = (amount_r - amount_l) * (v / 220) / (amount_r + amount_l)
-        return(turn)
+        turn = (amount_r - amount_l) * (- np.cos(v / 220) + 1) / (amount_r + amount_l)
+        if turn > 1:
+            turn = 1
+        return(turn * 100)
 
 class Movements:
     '''use move. method to: do some of this things:'''
