@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 
 fps = 30
-size = 0.05
+size = 0.1
 needed_time=int(datetime.now().microsecond +1e6 / fps) % 1e6
 
 def get_speed_list(img):
@@ -88,10 +88,10 @@ def get_brightness_amount(map_frame, x, y):
     # global size
     a = int(map_frame.shape[0] * size)
 
-    map_frame_l = map_frame[y - a : y,
+    map_frame_l = map_frame[y - a : y + 5 * a,
                             x - a : x]
 
-    map_frame_r = map_frame[y - a : y,
+    map_frame_r = map_frame[y - a : y + 5 * a,
                             x : x + a]
 
     amount_l = np.average(map_frame_l)
