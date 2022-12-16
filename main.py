@@ -8,7 +8,6 @@ import pygetwindow as gw
 import keyboard
 import time
 from datetime import datetime
-
 import classes.Steering as Steering
 import classes.Move as Move
 import classes.Imcap as Imcap
@@ -105,21 +104,4 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cv2.destroyAllWindows()
-Move.realise_all()
-'''
-def color_pixel_count(img_r,img_l):
-    
-    Count number of pixels in diferent colors
-    :param map_rect_r: right side of minimap
-    :param map_rect_l: left side of mininap
-    :return: n_l and n_r
-    
-
-    for pixel in map_rect_r.getdata():
-        if pixel == (250,250,250) :
-            n_r += 1
-
-    for pixel in map_rect_l.getdata():
-        if pixel == (250,250,250) :
-            n_l += 1
-'''
+Move.release_all()
