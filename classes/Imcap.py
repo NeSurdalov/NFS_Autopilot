@@ -3,7 +3,11 @@
 # Returns a list of segment conditions:
 from datetime import datetime
 import cv2
-needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+import numpy as np
+
+fps = 30
+size = 0.05
+needed_time=int(datetime.now().microsecond +1e6 / fps) % 1e6
 
 def get_speed_list(img):
     offset = 30
@@ -81,7 +85,7 @@ def get_rects(window):
     return(map_rect, speed_rect)
 
 def get_brightness_amount(map_frame, x, y):
-    global size
+    # global size
     a = int(map_frame.shape[0] * size)
 
     map_frame_l = map_frame[y - a : y,
@@ -96,7 +100,7 @@ def get_brightness_amount(map_frame, x, y):
 
 def limiter():
     global fps
-    if(datetime.now().microsecond<Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
+    if(datetime.now().microsecond < Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
     Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
 
 def get_center(mask):

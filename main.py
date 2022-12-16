@@ -9,10 +9,9 @@ import keyboard
 import time
 from datetime import datetime
 import classes.Steering as Steering
-import classes.Move as Move
+from classes.Move import *
 import classes.Imcap as Imcap
 
-fps = 30
 gisteresis_st=5
 gisteresis_th=10
 gisteresis_br=30
@@ -22,10 +21,10 @@ size=0.05
 kernel = np.ones((20, 20), 'uint8')
 
 time.sleep(5)
-Move.gas()
+gas()
 pad.update()
 time.sleep(5)
-Move.roll()
+roll()
 pad.update()
 time.sleep(5)
 
@@ -33,8 +32,11 @@ time.sleep(5)
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 window = gw.getWindowsWithTitle(window_name)[0]
-window.activate()
-
+if window != []:
+    try:
+        window.activate()
+    except:
+        window.maximize()
 while True:
     #Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
@@ -71,15 +73,15 @@ while True:
         cv2.imshow("Left-side map", frame_map_l)
         cv2.imshow("Right-side map", frame_map_r)
         print(Steering.steering_amount(speed, amount_l, amount_r))
-        Move.turn(Steering.steering_amount(speed, amount_l, amount_r))
+        turn(Steering.steering_amount(speed, amount_l, amount_r))
         if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
-            Move.gas()
+            gas()
             print("gas")
         elif((speed-target_speed)>gisteresis_br):
             #Move.brake()
             pass
-        elif(): Move.roll()
-        Move.update()
+        elif(): roll()
+        update()
 
 
     '''
@@ -104,4 +106,4 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cv2.destroyAllWindows()
-Move.release_all()
+release_all()
