@@ -23,7 +23,7 @@ class Steering:
         if amount_l + amount_r == 0:
             return(0)
         else:
-            turn = (amount_r - amount_l) * (np.exp(v / 220) - 1) / (amount_r + amount_l)
+            turn = (amount_r - amount_l) * (v / 220)**2 / (amount_r + amount_l)
             if turn > 100:
                 turn = 100
             return(turn * 100)
