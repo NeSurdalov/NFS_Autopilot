@@ -18,6 +18,7 @@ gisteresis_br=30
 target_speed=60
 amount_dif = gisteresis_st
 size=0.05
+
 kernel = np.ones((20, 20), 'uint8')
 
 time.sleep(5)
