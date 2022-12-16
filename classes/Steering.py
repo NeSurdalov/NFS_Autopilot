@@ -6,6 +6,3 @@ def steering_amount(v, amount_l, amount_r):
             if turn > 1:
                 turn = 1
             return(turn * 100)
-
-def print_message():
-    print('It works!')

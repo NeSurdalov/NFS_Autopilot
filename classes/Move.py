@@ -1,9 +1,7 @@
 '''use Move. method to: do some of this things:'''
 
-def vg_import():
-    import vgamepad as vg
-    pad = vg.VX360Gamepad()
-    return(pad)
+import vgamepad as vg
+pad = vg.VX360Gamepad()
 
 def gas(value=100):
     gain=int(value/100*255) 
@@ -28,5 +26,3 @@ def update():
 def realise_all():
     pad.reset()
     pad.update()
-
-pad = vg_import()

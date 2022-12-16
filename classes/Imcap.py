@@ -1,6 +1,10 @@
 '''Class for working with image capturing'''
-needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+
 # Returns a list of segment conditions:
+from datetime import datetime
+import cv2
+needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+
 def get_speed_list(img):
     offset = 30
     segment_condition = []
