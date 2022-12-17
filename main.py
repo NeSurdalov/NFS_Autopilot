@@ -20,13 +20,12 @@ amount_dif = gisteresis_st
 size=0.05
 kernel = np.ones((20, 20), 'uint8')
 
-time.sleep(5)
 gas()
 pad.update()
-time.sleep(5)
+# time.sleep(5)
 roll()
 pad.update()
-time.sleep(5)
+# time.sleep(5)
 
 '''Этот кусочек кода делает скрин'''
 window_name = "Need for Speed™ Most Wanted"
@@ -82,27 +81,6 @@ while True:
             pass
         elif(): roll()
         update()
-
-
-    '''
-    #steering control
-    if(abs(amount_l-amount_r)<gisteresis_st):
-        Move.straight()
-    elif(amount_r<amount_l):
-        Move.left()
-    elif(amount_r>amount_l):
-        Move.right()
-    #throttle control
-    if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
-        Move.gas()
-    elif((speed-target_speed)>gisteresis_br):
-        Move.brake()
-    elif(): Move.roll()
-    '''  
-    # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
-    #     nitro = 1
-    # print(n_r, n_l, right, left, turn, nitro)
-
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cv2.destroyAllWindows()
