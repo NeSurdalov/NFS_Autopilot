@@ -10,6 +10,6 @@ def steering_amount(v, amount_l, amount_r):
                                amount_r + amount_l)
                 if turn > 100:
                     turn = 100
-                if v == 0:
+                if v == 0 and amount_l == amount_r == 0:
                     turn = 0.2
                 return (turn * 100)
