@@ -12,6 +12,8 @@ import classes.Steering as Steering
 from classes.Move import *
 import classes.Imcap as Imcap
 
+pad = vg.VX360Gamepad()
+fps = 30
 gisteresis_st=5
 gisteresis_th=10
 gisteresis_br=30
@@ -69,14 +71,20 @@ while True:
         (thresh, threshed_map) = cv2.threshold(nfs_map, 150, 255, cv2.THRESH_BINARY)
         threshed_map = cv2.cvtColor(threshed_map, cv2.COLOR_BGR2GRAY)
 
-        # Getting two bites of the map on the top-left side of
+        # Getting two small chunks of the map just above the cursor:
         nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(threshed_map, x, y)
         map_l = np.array(nfs_map_l)
         map_r = np.array(nfs_map_r)
+
+        # Showing windows with the map frames:
         cv2.imshow("Left-side map", map_l)
         cv2.imshow("Right-side map", map_r)
         print(Steering.steering_amount(speed, amount_l, amount_r))
+
+        # Making a turn:
         turn(Steering.steering_amount(speed, amount_l, amount_r))
+        
+        # Speed control
         if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
             gas()
             print("gas")
