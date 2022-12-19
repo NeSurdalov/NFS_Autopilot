@@ -4,6 +4,7 @@
 from datetime import datetime
 import cv2
 import numpy as np
+import time
 
 fps = 30
 size = 0.1
@@ -99,9 +100,10 @@ def get_brightness_amount(map_frame, x, y):
     return(map_frame_l, map_frame_r, amount_l, amount_r)
 
 def limiter():
-    global fps
-    if(datetime.now().microsecond < Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
-    Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+    global fps, needed_time
+    if(datetime.now().microsecond < needed_time): time.sleep((needed_time-datetime.now().microsecond)/1e6)
+    needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
+    if(needed_time>1e6): needed_time-=1e6
 
 def get_center(mask):
     for y in range(int(mask.shape[0] / 3), int(mask.shape[0] * 2 / 3)):
