@@ -23,6 +23,6 @@ def turn(value=100):
     pad.left_joystick(x_value=gain,y_value=0)
 def update():
     pad.update()
-def realise_all():
+def release_all():
     pad.reset()
     pad.update()

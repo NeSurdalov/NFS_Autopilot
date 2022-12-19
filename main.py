@@ -20,15 +20,13 @@ amount_dif = gisteresis_st
 size=0.05
 kernel = np.ones((20, 20), 'uint8')
 
-time.sleep(5)
 gas()
 pad.update()
-time.sleep(5)
 roll()
 pad.update()
 time.sleep(5)
 
-'''Этот кусочек кода делает скрин'''
+# Taking a screenshot:
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 window = gw.getWindowsWithTitle(window_name)[0]
@@ -38,40 +36,45 @@ if window != []:
     except:
         window.maximize()
 while True:
-    #Imcap.limiter()
     window_rect = (window.left, window.top, window.width, window.height)
 
     # Breaking the window into segments:
     map_rect, speed_rect = Imcap.get_rects(window)[0:4]
 
+    # Taking a screenshot of a certain segment:
     nfs_map = np.array(pyautogui.screenshot(region=map_rect))
     nfs_speed = np.array(pyautogui.screenshot(region=speed_rect))
 
-    (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # Darker speedometer pixels screening out
+    # Screening out the darker speedometer pixels:
+    (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
-
+    # Getting the coordinates of the map center and centering the map rect:
     nfs_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2RGB)
     hsv = cv2.cvtColor(nfs_map, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, np.array([101, 72, 40]), np.array([255, 255, 255]))
     center = Imcap.get_center(mask)
-
-    frame_speed = np.array(nfs_speed)
-    frame_map = np.array(nfs_map)
     
-    speed_list = Imcap.get_speed_list(frame_speed)
+    # Getting the speed amount: 
+    speed_list = Imcap.get_speed_list(nfs_speed)
     speed=Imcap.get_speed(speed_list)
     
+    # If the game window is not opened, 'center' will be of value 'None' which breakes the script,
+    # so we take all the lines that use 'center' variable and put them into an if statement:
     if center != None:
         x, y = center
+
+        # Screening out the darker map pixels:
         threshed_map = cv2.cvtColor(nfs_map, cv2.COLOR_BGR2GRAY)
         (thresh, threshed_map) = cv2.threshold(nfs_map, 150, 255, cv2.THRESH_BINARY)
         threshed_map = cv2.cvtColor(threshed_map, cv2.COLOR_BGR2GRAY)
+
+        # Getting two bites of the map on the top-left side of
         nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(threshed_map, x, y)
-        frame_map_l = np.array(nfs_map_l)
-        frame_map_r = np.array(nfs_map_r)
-        cv2.imshow("Left-side map", frame_map_l)
-        cv2.imshow("Right-side map", frame_map_r)
+        map_l = np.array(nfs_map_l)
+        map_r = np.array(nfs_map_r)
+        cv2.imshow("Left-side map", map_l)
+        cv2.imshow("Right-side map", map_r)
         print(Steering.steering_amount(speed, amount_l, amount_r))
         turn(Steering.steering_amount(speed, amount_l, amount_r))
         if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
@@ -82,27 +85,6 @@ while True:
             pass
         elif(): roll()
         update()
-
-
-    '''
-    #steering control
-    if(abs(amount_l-amount_r)<gisteresis_st):
-        Move.straight()
-    elif(amount_r<amount_l):
-        Move.left()
-    elif(amount_r>amount_l):
-        Move.right()
-    #throttle control
-    if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
-        Move.gas()
-    elif((speed-target_speed)>gisteresis_br):
-        Move.brake()
-    elif(): Move.roll()
-    '''  
-    # eliif n_r2 - 10 <= n_l2 = > n_r2 + 10:
-    #     nitro = 1
-    # print(n_r, n_l, right, left, turn, nitro)
-
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cv2.destroyAllWindows()
