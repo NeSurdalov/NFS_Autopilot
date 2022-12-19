@@ -54,11 +54,8 @@ while True:
     hsv = cv2.cvtColor(nfs_map, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, np.array([101, 72, 40]), np.array([255, 255, 255]))
     center = Imcap.get_center(mask)
-
-    frame_speed = nfs_speed
-    frame_map = nfs_map
     
-    speed_list = Imcap.get_speed_list(frame_speed)
+    speed_list = Imcap.get_speed_list(nfs_speed)
     speed=Imcap.get_speed(speed_list)
     
     if center != None:
@@ -67,10 +64,10 @@ while True:
         (thresh, threshed_map) = cv2.threshold(nfs_map, 150, 255, cv2.THRESH_BINARY)
         threshed_map = cv2.cvtColor(threshed_map, cv2.COLOR_BGR2GRAY)
         nfs_map_l, nfs_map_r, amount_l, amount_r = Imcap.get_brightness_amount(threshed_map, x, y)
-        frame_map_l = np.array(nfs_map_l)
-        frame_map_r = np.array(nfs_map_r)
-        cv2.imshow("Left-side map", frame_map_l)
-        cv2.imshow("Right-side map", frame_map_r)
+        map_l = np.array(nfs_map_l)
+        map_r = np.array(nfs_map_r)
+        cv2.imshow("Left-side map", map_l)
+        cv2.imshow("Right-side map", map_r)
         print(Steering.steering_amount(speed, amount_l, amount_r))
         turn(Steering.steering_amount(speed, amount_l, amount_r))
         if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
