@@ -4,6 +4,8 @@ import pyautogui
 import pygetwindow as gw
 import os
 
+'''imported in imcap'''
+
 
 def speed_check(img):
     w, h = img.shape[0, 1]
@@ -37,7 +39,8 @@ while 1:
     nfs_speed = pyautogui.screenshot(region=speed_rect)
 
     # erode_speed = cv2.erode(nfs_speed, kernel, iterations=1)  # сглаживание
-    (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50, 255, cv2.THRESH_BINARY)  # отсеивание пикселей
+    (thresh, nfs_speed) = cv2.threshold(nfs_speed, 50,
+                                        255, cv2.THRESH_BINARY)  # отсеивание пикселей
     nfs_speed = cv2.cvtColor(nfs_speed, cv2.COLOR_BGR2GRAY)
 
     frame_map = np.array(nfs_map)
