@@ -97,12 +97,7 @@ def get_brightness_amount(map_frame, x, y):
     amount_l = np.average(map_frame_l)
     amount_r = np.average(map_frame_r)
     return(map_frame_l, map_frame_r, amount_l, amount_r)
-
-def limiter():
-    global fps
-    if(datetime.now().microsecond < Imcap.needed_time): time.sleep((Imcap.needed_time-datetime.now().microsecond)/1e6)
-    Imcap.needed_time=int(datetime.now().microsecond +1e6/fps)%1e6
-
+    
 def get_center(mask):
     for y in range(int(mask.shape[0] / 3), int(mask.shape[0] * 2 / 3)):
         for x in range(int(mask.shape[1] / 3), int(mask.shape[1] * 2 / 3)):
