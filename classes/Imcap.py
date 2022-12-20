@@ -1,14 +1,15 @@
 '''Class for working with image capturing'''
 
-# Returns a list of segment conditions:
+
 from datetime import datetime
 import cv2
 import numpy as np
-import time
 
 fps = 30
 size = 0.1
 needed_time=int(datetime.now().microsecond +1e6 / fps) % 1e6
+
+# Returns a list of segment conditions:
 
 def get_speed_list(img):
     offset = 30
