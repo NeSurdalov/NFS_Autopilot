@@ -9,4 +9,4 @@ We gartentee working only when game is used in window mode (you can enable it us
 2. Run main.py and then run game
 3. To to controll settings, choose XBOX 360 gamepad, run calibration.py and follow instructions in this file
 4. Then start race and run main.py
-5. To stop autopilot chose any of it's windows and press 'q'
+5. To stop autopilot choose any of it's windows and press 'q'
