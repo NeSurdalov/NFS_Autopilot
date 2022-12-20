@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 from PIL import Image
-# import mss
-# import win32gui #where we use it?
 import pyautogui
 import pygetwindow as gw
 import keyboard
@@ -13,15 +11,15 @@ from classes.Move import *
 import classes.Imcap as Imcap
 
 pad = vg.VX360Gamepad()
-fps = 30
-gisteresis_st=5
-gisteresis_th=10
-gisteresis_br=30
-target_speed=60
-amount_dif = gisteresis_st
+
 size=0.05
+
+gisteresis_st=size*100
+amount_dif = gisteresis_st
+
 kernel = np.ones((20, 20), 'uint8')
 
+#initializing gamepad
 gas()
 pad.update()
 roll()
@@ -32,11 +30,13 @@ time.sleep(5)
 window_name = "Need for Speed™ Most Wanted"
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 window = gw.getWindowsWithTitle(window_name)[0]
+
 if window != []:
     try:
         window.activate()
     except:
         window.maximize()
+        
 while True:
     window_rect = (window.left, window.top, window.width, window.height)
 
@@ -88,12 +88,13 @@ while True:
         if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
             gas()
             print("gas")
-        elif((speed-target_speed)>gisteresis_br):
-            #Move.brake()
-            pass
-        elif(): roll()
+        else(): roll()
+            
         update()
+        
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+        
 cv2.destroyAllWindows()
+
 release_all()
