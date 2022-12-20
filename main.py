@@ -14,17 +14,16 @@ pad = vg.VX360Gamepad()
 
 size=0.05
 
-gisteresis_st=size*100
-amount_dif = gisteresis_st
+amount_dif = 80
 
 kernel = np.ones((20, 20), 'uint8')
 
 #initializing gamepad
+time.sleep(5)
 gas()
 pad.update()
 roll()
 pad.update()
-time.sleep(5)
 
 # Taking a screenshot:
 window_name = "Need for Speed™ Most Wanted"
@@ -79,13 +78,13 @@ while True:
         # Showing windows with the map frames:
         cv2.imshow("Left-side map", map_l)
         cv2.imshow("Right-side map", map_r)
-        print(Steering.steering_amount(speed, amount_l, amount_r))
+        print(amount_r-amount_l)
 
         # Making a turn:
         turn(Steering.steering_amount(speed, amount_l, amount_r))
         
         # Speed control
-        if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
+        if(((amount_l-amount_dif) <= amount_r ) and  (amount_r <= (amount_l + amount_dif))):
             gas()
             print("gas")
         else: roll()
