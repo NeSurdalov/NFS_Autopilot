@@ -88,7 +88,7 @@ while True:
         if((amount_l-amount_dif) <= amount_r >= (amount_l + amount_dif)):
             gas()
             print("gas")
-        else(): roll()
+        else: roll()
             
         update()
         
