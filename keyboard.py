@@ -1,6 +1,6 @@
 import keyboard
 from time import sleep
-
+''' it is backup for old version of emulation steering'''
 class movements:
     '''use move. method to: do some of this things:'''
     def __init__(self):
