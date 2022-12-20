@@ -1,6 +1,8 @@
 # NFS_Autopilot
 This program is autopilot for NFS MW
+
 Unfortunately you can run it only on windows because it uses XBOX 360 gamepad emulation
+
 We gartentee working only when game is used in window mode (you can enable it using NFS MW resolution patch)
 # How to use:
 1. Install all required libraries and 
