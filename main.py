@@ -1,11 +1,8 @@
 import cv2
 import numpy as np
-from PIL import Image
 import pyautogui
 import pygetwindow as gw
-import keyboard
 import time
-from datetime import datetime
 import classes.Steering as Steering
 from classes.Move import *
 import classes.Imcap as Imcap
