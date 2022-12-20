@@ -8,11 +8,11 @@ from classes.Move import *
 import classes.Imcap as Imcap
 
 pad = vg.VX360Gamepad()
-
+# size of square used for navigation
 size=0.05
-
+# difference between brightneses in whith car will speed up
 amount_dif = 80
-
+# blurring mask
 kernel = np.ones((20, 20), 'uint8')
 
 #initializing gamepad
