@@ -5,7 +5,7 @@ Unfortunately you can run it only on windows because it uses XBOX 360 gamepad em
 
 We gartentee working only when game is used in window mode (you can enable it using NFS MW resolution patch)
 # How to use:
-1. Install all required libraries and 
+1. Install all required libraries
 2. Run main.py and then run game
 3. To to controll settings, choose XBOX 360 gamepad, run calibration.py and follow instructions in this file
 4. Then start race and run main.py
